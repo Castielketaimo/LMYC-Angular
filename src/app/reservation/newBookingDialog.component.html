@@ -1,11 +1,16 @@
 <h1 mat-dialog-title>New Booking</h1>
 <div mat-dialog-content>
+    <mat-form-field>
+        <mat-select placeholder="Boat" [(value)]="selectedBoat">
+            <mat-option *ngFor="let boat of allBoats" value="boat.boatName">{{boat.boatName}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+
     <label>
     Booking Date Time:
         <input 
             [(ngModel)]="dateRange"
             [min]="min"
-            [max]="max"
             [owlDateTimeTrigger]="dt11" 
             [owlDateTime]="dt11" 
             [selectMode]="'range'"
@@ -23,7 +28,7 @@
     </mat-form-field>
 
     <mat-form-field>
-        <mat-select placeholder="Member Crew" [formControl]="memberCrewControl" [(value)]="selected" multiple>
+        <mat-select placeholder="Member Crew" [formControl]="memberCrewControl" [(value)]="selectedUsers" multiple>
             <mat-optgroup *ngFor="let type of memberTypes" [label]="type.name" [disabled]="type.disabled" mutiple>
                 <mat-option *ngFor="let user of type.user" [value]="user.value">
                     {{ user.viewValue }}

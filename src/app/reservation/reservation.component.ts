@@ -1,3 +1,5 @@
+import { Boat } from './../models/boat';
+import { FleetService } from './../services/fleet.service';
 import { IRoleMember } from './../models/IRoleMember';
 import { IReservation } from './../models/reservation'
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material'
@@ -123,24 +125,34 @@ export class BookingDetailDialogComponent {
 export class newBookingDialogComponent {
   public dateRange
   public min = new Date()
-  public max = new Date(2018, 3, 21, 20, 30)
   public startDateTime
   public endDateTime
   public nonMemberCrews
   public memberCrews
   public memberCrewControl = new FormControl()
-  public selected;
+  public selectedUsers;
   public Itinerary;
   public allCrewMembers : IRoleMember[];
+  selectedBoat
   memberTypes = [];
   newReservation: IReservation
+  public allBoats : Boat[]
+
+
   constructor(
     public dialogRef: MatDialogRef<newBookingDialogComponent>,
     protected reservationService: ReservationService,
+    protected fleetService: FleetService,
     @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit() {
     this.getAllMemberCrews()
+    this.getAllBoats()
+  }
+
+  getAllBoats(): void {
+    this.fleetService.getFleets()
+      .then(boats => this.allBoats = boats);
   }
 
   getAllMemberCrews(){
@@ -274,15 +286,7 @@ export class newBookingDialogComponent {
   }
 
   checkDateRangeValid(startDate, endDate){
-    let now = new Date().toString()
-    if(this.hourDiff(startDate, endDate) > 72){
-      alert("Sorry, you can't book a boat for more than 72 hours at the time")
-      return false;
-    }
-    if(this.hourDiff(now, endDate) < 24) {
-      alert("Congrats! You get the booking for free!")
-      this.newReservation.allocatedHours = '0';
-    }
+    
   }
 
   formatDate(dateString){
@@ -305,6 +309,9 @@ export class newBookingDialogComponent {
     return  ((endTime - startTime) / (1000 * 60 * 60))
   }
 
+  getNewReservation(){
+
+  }
   onSubmit(): void {
 
     this.dialogRef.close()
